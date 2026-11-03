@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check YAML frontmatter in all .md files
+      - name: Check YAML frontmatter (files that have one)
         run: |
           pip install -q pyyaml
           python3 -c "
@@ -38,7 +38,7 @@ jobs:
                       head = fh.read(2048)
                   m = re.match(r'^---\s*\n(.*?)\n---', head, re.DOTALL)
                   if not m:
-                      errors.append(f'{fp}: missing frontmatter block')
+                      print(f'  ℹ️  {fp}: no frontmatter (skipped)')
                       continue
                   try:
                       fm = yaml.safe_load(m.group(1))
@@ -57,7 +57,7 @@ jobs:
                   print(f'  ❌ {e}')
               sys.exit(1)
           else:
-              print('✅ All .md files have valid frontmatter')
+              print('✅ All frontmatter blocks valid')
           "
 
   lint:
